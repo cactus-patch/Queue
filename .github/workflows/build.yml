@@ -1,0 +1,23 @@
+name: build and upload
+
+on:
+  push:
+    branches: [ exmod, main ]
+  pull_request:
+    branches: [ exmod, main ]
+
+jobs:  
+  build:    
+    runs-on: ubuntu-latest
+    steps:      
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9
+          cache: true
+      - run: curl -sSL https://ftp.furry.coffee/refs.tar.gz | tar xvzf -
+      - run: dotnet restore --locked-mode
+      - run: dotnet build
+      - uses: actions/upload-artifact@v4.5.0
+        with:
+          path: bin/Debug/net48/Queue.dll
